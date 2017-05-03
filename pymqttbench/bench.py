@@ -104,7 +104,7 @@ class Pub(multiprocessing.Process):
                 current_time = datetime.datetime.utcnow()
                 curr_delta = current_time - self.start_time
                 if curr_delta.total_seconds() > self.timeout:
-                    raise Exception('We hit the sub timeout!')
+                    raise Exception('We hit the pub timeout!')
         end_time = datetime.datetime.utcnow()
         delta = end_time - self.start_time
         PUB_QUEUE.put(delta.total_seconds())
@@ -176,8 +176,16 @@ def main():
             raise Exception('Timed out waiting for threads to return')
 
     # Let's do some maths
-    sub_times = numpy.array([SUB_QUEUE.get() for i in range(opts.sub_count)])
-    pub_times = numpy.array([PUB_QUEUE.get() for i in range(opts.pub_count)])
+    if SUB_QUEUE.qsize < opts.sub_clients:
+        print('Something went horribly wrong, there are less results than '
+              'sub threads')
+        exit(1)
+    if PUB_QUEUE.qsize < opts.pub_clients:
+        print('Something went horribly wrong, there are less results than '
+              'pub threads')
+        exit(1)
+    sub_times = numpy.array([SUB_QUEUE.get() for i in range(opts.sub_clients)])
+    pub_times = numpy.array([PUB_QUEUE.get() for i in range(opts.pub_clients)])
 
     print('=' * 80)
     print('Subscription Results')
