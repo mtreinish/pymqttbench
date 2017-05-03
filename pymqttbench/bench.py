@@ -191,31 +191,26 @@ def main():
     print('Subscription Results')
     print('=' * 80)
     mean_duration = numpy.mean(sub_times)
-    print('Avg. sub time: %s' % mean_duration)
-    print('Subscription time std dev: %s' % numpy.std(sub_times))
+    print('Avg. subscriber duration: %s' % mean_duration)
+    print('Subscriber duration std dev: %s' % numpy.std(sub_times))
     avg_throughput = float(opts.sub_count) / float(mean_duration)
-    print('Avg. Single Client Throughput: %s') % avg_throughput
+    print('Avg. Client Throughput: %s') % avg_throughput
     sum_duration = numpy.sum(sub_times)
     agg_thpt = float(opts.sub_count * opts.sub_clients) / float(sum_duration)
-    print('Agg. Throughput (msg_count * clients) / (sum of clients durations):'
-          ' %s' % agg_thpt)
     total_thpt = float(
         opts.sub_count * opts.sub_clients) / float(mean_duration)
     print('Total Throughput (msg_count * clients) / (avg. sub time): '
           '%s' % total_thpt)
-    print('\n\n')
     print('=' * 80)
     print('Publisher Results')
     print('=' * 80)
     mean_duration = numpy.mean(pub_times)
-    print('Avg. sub time: %s' % mean_duration)
-    print('Subscription time std dev: %s' % numpy.std(pub_times))
+    print('Avg. publisher duration: %s' % mean_duration)
+    print('Publisher duration std dev: %s' % numpy.std(pub_times))
     avg_throughput = float(opts.pub_count) / float(mean_duration)
-    print('Avg. Single Client Throughput: %s') % avg_throughput
+    print('Avg. Client Throughput: %s') % avg_throughput
     sum_duration = numpy.sum(pub_times)
     agg_thpt = float(opts.pub_count * opts.pub_clients) / float(sum_duration)
-    print('Agg. Throughput (msg_count * clients) / (sum of clients durations):'
-          ' %s' % agg_thpt)
     total_thpt = float(
         opts.pub_count * opts.pub_clients) / float(mean_duration)
     print('Total Throughput (msg_count * clients) / (avg. sub time): '
