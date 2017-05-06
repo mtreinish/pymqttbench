@@ -131,6 +131,7 @@ def main():
     parser.add_argument('--cacert')
     parser.add_argument('--username')
     parser.add_argument('--password')
+    parser.add_argument('--brief', action='store_true', default=False)
 
     opts = parser.parse_args()
 
@@ -212,34 +213,50 @@ def main():
         failed_count = opts.pub_clients - len(pub_times)
         print("%s publishing workers failed" % failed_count)
 
-    print('=' * 80)
-    print('Subscription Results')
-    print('=' * 80)
-    mean_duration = numpy.mean(sub_times)
-    print('Avg. subscriber duration: %s' % mean_duration)
-    print('Subscriber duration std dev: %s' % numpy.std(sub_times))
-    avg_throughput = float(opts.sub_count) / float(mean_duration)
-    print('Avg. Client Throughput: %s') % avg_throughput
-    sum_duration = numpy.sum(sub_times)
-    agg_thpt = float(opts.sub_count * opts.sub_clients) / float(sum_duration)
-    total_thpt = float(
-        opts.sub_count * opts.sub_clients) / float(mean_duration)
-    print('Total Throughput (msg_count * clients) / (avg. sub time): '
-          '%s' % total_thpt)
-    print('=' * 80)
-    print('Publisher Results')
-    print('=' * 80)
-    mean_duration = numpy.mean(pub_times)
-    print('Avg. publisher duration: %s' % mean_duration)
-    print('Publisher duration std dev: %s' % numpy.std(pub_times))
-    avg_throughput = float(opts.pub_count) / float(mean_duration)
-    print('Avg. Client Throughput: %s') % avg_throughput
-    sum_duration = numpy.sum(pub_times)
-    agg_thpt = float(opts.pub_count * opts.pub_clients) / float(sum_duration)
-    total_thpt = float(
-        opts.pub_count * opts.pub_clients) / float(mean_duration)
-    print('Total Throughput (msg_count * clients) / (avg. sub time): '
-          '%s' % total_thpt)
+    sub_mean_duration = numpy.mean(sub_times)
+    sub_avg_throughput = float(opts.sub_count) / float(sub_mean_duration)
+    sub_sum_duration = numpy.sum(sub_times)
+    sub_agg_thpt = float(opts.sub_count * opts.sub_clients) / float(sub_sum_duration)
+    sub_total_thpt = float(
+        opts.sub_count * opts.sub_clients) / float(sub_mean_duration)
+    pub_mean_duration = numpy.mean(pub_times)
+    pub_avg_throughput = float(opts.pub_count) / float(pub_mean_duration)
+    pub_sum_duration = numpy.sum(pub_times)
+    pub_agg_thpt = float(opts.pub_count * opts.pub_clients) / float(pub_sum_duration)
+    pub_total_thpt = float(
+        opts.pub_count * opts.pub_clients) / float(pub_mean_duration)
+    if opts.brief:
+        output = '%s:%s:%s:%s:%s:%s:%s:%s:%s:%s'
+    else:
+        output = """\
+[ran with %s subscribers and %s publishers]
+================================================================================
+Subscription Results
+================================================================================
+Avg. subscriber duration: %s
+Subscriber duration std dev: %s
+Avg. Client Throughput: %s
+Total Throughput (msg_count * clients) / (avg. sub time): %s
+================================================================================
+Publisher Results
+================================================================================
+Avg. publisher duration: %s
+Publisher duration std dev: %s
+Avg. Client Throughput: %s
+Total Throughput (msg_count * clients) / (avg. sub time): %s
+"""
+    print(output % (
+        opts.sub_clients,
+        opts.pub_clients,
+        sub_mean_duration,
+        numpy.std(sub_times),
+        sub_avg_throughput,
+        sub_total_thpt,
+        pub_mean_duration,
+        numpy.std(pub_times),
+        pub_avg_throughput,
+        pub_total_thpt,
+        ))
 
 
 if __name__ == '__main__':
