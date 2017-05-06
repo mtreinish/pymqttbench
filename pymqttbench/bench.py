@@ -184,8 +184,17 @@ def main():
         print('Something went horribly wrong, there are less results than '
               'pub threads')
         exit(1)
-    sub_times = numpy.array([SUB_QUEUE.get() for i in range(opts.sub_clients)])
-    pub_times = numpy.array([PUB_QUEUE.get() for i in range(opts.pub_clients)])
+    sub_times = numpy.array(
+        [SUB_QUEUE.get(opts.sub_timeout) for i in range(opts.sub_clients)])
+    pub_times = numpy.array(
+        [PUB_QUEUE.get(opts.pub_timeout) for i in range(opts.pub_clients)])
+
+    if len(sub_times) < opts.sub_clients:
+        failed_count = opts.sub_clients - len(sub_times)
+        print("%s subscription workers failed" % failed_count)
+    if len(pub_times) < opts.pub_clients:
+        failed_count = opts.pub_clients - len(pub_times)
+        print("%s publishing workers failed" % failed_count)
 
     print('=' * 80)
     print('Subscription Results')
