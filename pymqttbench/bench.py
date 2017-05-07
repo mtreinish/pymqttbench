@@ -44,6 +44,7 @@ class Sub(multiprocessing.Process):
         self.end_time = None
         self.timeout = timeout
         self.qos = qos
+        self.end_time_lock = multiprocessing.Lock()
 
     def run(self):
         def on_connect(client, userdata, flags, rc):
@@ -54,8 +55,10 @@ class Sub(multiprocessing.Process):
                 self.start_time = datetime.datetime.utcnow()
             self.msg_count += 1
             if self.msg_count >= self.max_count:
+                self.end_time_lock.acquire()
                 if self.end_time is None:
                     self.end_time = datetime.datetime.utcnow()
+                self.end_time_lock.release()
 
         self.client = mqtt.Client()
         self.client.on_connect = on_connect
@@ -68,11 +71,13 @@ class Sub(multiprocessing.Process):
         self.client.loop_start()
         while True:
             time.sleep(1)
+            self.end_time_lock.acquire()
             if self.end_time:
                 delta = self.end_time - self.start_time
                 SUB_QUEUE.put(delta.total_seconds())
                 self.client.loop_stop()
                 break
+            self.end_time_lock.release()
             if self.start_time:
                 current_time = datetime.datetime.utcnow()
                 curr_delta = current_time - self.start_time
