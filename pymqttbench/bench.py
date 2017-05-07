@@ -31,7 +31,7 @@ PUB_QUEUE = multiprocessing.Queue()
 
 class Sub(multiprocessing.Process):
     def __init__(self, hostname, port=1883, tls=None, auth=None, topic=None,
-                 timeout=60, max_count=10):
+                 timeout=60, max_count=10, qos=0):
         super(Sub, self).__init__()
         self.hostname = hostname
         self.port = port
@@ -43,10 +43,11 @@ class Sub(multiprocessing.Process):
         self.max_count = max_count
         self.end_time = None
         self.timeout = timeout
+        self.qos = qos
 
     def run(self):
         def on_connect(client, userdata, flags, rc):
-            client.subscribe(BASE_TOPIC + '/#')
+            client.subscribe(BASE_TOPIC + '/#', qos=self.qos)
 
         def on_message(client, userdata, msg):
             if self.start_time is None:
@@ -81,7 +82,7 @@ class Sub(multiprocessing.Process):
 
 class Pub(multiprocessing.Process):
     def __init__(self, hostname, port=1883, tls=None, auth=None, topic=None,
-                 timeout=60, max_count=10, msg_size=1024):
+                 timeout=60, max_count=10, msg_size=1024, qos=0):
         super(Pub, self).__init__()
         self.hostname = hostname
         self.port = port
@@ -94,12 +95,14 @@ class Pub(multiprocessing.Process):
         self.timeout = timeout
         self.msg = ''.join(
             random.choice(string.lowercase) for i in range(msg_size))
+        self.qos = qos
 
     def run(self):
         self.start_time = datetime.datetime.utcnow()
         for i in range(self.max_count):
             publish.single(self.topic, self.msg, hostname=self.hostname,
-                           port=self.port, auth=self.auth, tls=self.tls)
+                           port=self.port, auth=self.auth, tls=self.tls,
+                           qos=self.qos)
             if self.start_time:
                 current_time = datetime.datetime.utcnow()
                 curr_delta = current_time - self.start_time
@@ -132,6 +135,7 @@ def main():
     parser.add_argument('--username')
     parser.add_argument('--password')
     parser.add_argument('--brief', action='store_true', default=False)
+    parser.add_argument('--qos', default=0, type=int, choices=[0, 1, 2])
 
     opts = parser.parse_args()
 
@@ -150,13 +154,13 @@ def main():
 
     for i in range(opts.sub_clients):
         sub = Sub(opts.hostname, opts.port, tls, auth, topic, opts.sub_timeout,
-                  opts.sub_count)
+                  opts.sub_count, opts.qos)
         sub_threads.append(sub)
         sub.start()
 
     for i in range(opts.pub_clients):
         pub = Pub(opts.hostname, opts.port, tls, auth, topic, opts.pub_timeout,
-                  opts.pub_count)
+                  opts.pub_count, opts.qos)
         pub_threads.append(pub)
         pub.start()
 
