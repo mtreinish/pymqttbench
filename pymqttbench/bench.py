@@ -190,6 +190,13 @@ def main():
         auth = {'username': opts.username,
                 'password': getattr(opts, 'password')}
 
+    if opts.pub_count * opts.pub_clients < opts.sub_count:
+        print('The configured number of publisher clients and published '
+              'message count is too small for the configured subscriber count.'
+              ' Increase the value of --pub-count and/or --pub-clients, or '
+              'decrease the value of --sub-count.')
+        exit(1)
+
     for i in range(opts.sub_clients):
         sub = Sub(opts.hostname, opts.port, tls, auth, topic, opts.sub_timeout,
                   opts.sub_count, opts.qos)
