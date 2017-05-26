@@ -121,26 +121,59 @@ class Pub(multiprocessing.Process):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--pub-clients', type=int, dest='pub_clients',
-                        default=10)
+                        default=10,
+                        help='The number of publisher client workers to use. '
+                             'By default 10 are used.')
     parser.add_argument('--sub-clients', type=int, dest='sub_clients',
-                        default=10)
+                        default=10,
+                        help='The number of subscriber client workers to use. '
+                             'By default 10 are used')
     parser.add_argument('--pub-count', type=int, dest='pub_count',
-                        default=10)
+                        default=10,
+                        help='The number of messages each publisher client '
+                             'will publish for completing. The default count '
+                             'is 10')
     parser.add_argument('--sub-count', type=int, dest='sub_count',
-                        default=10)
-    parser.add_argument('--msg-size', type=int, dest='msg_size', default=1024)
+                        default=10,
+                        help='The number of messages each subscriber client '
+                             'will wait to recieve before completing. The '
+                             'default count is 10.')
+    parser.add_argument('--msg-size', type=int, dest='msg_size', default=1024,
+                        help='The payload size to use in bytes')
     parser.add_argument('--sub-timeout', type=int, dest='sub_timeout',
-                        default=60)
+                        default=60,
+                        help='The amount of time, in seconds, a subscriber '
+                             'client will wait for messages. By default this '
+                             'is 60.')
     parser.add_argument('--pub-timeout', type=int, dest='pub_timeout',
-                        default=60)
-    parser.add_argument('--hostname', required=True)
-    parser.add_argument('--port', default=1883, type=int)
-    parser.add_argument('--topic')
-    parser.add_argument('--cacert')
-    parser.add_argument('--username')
-    parser.add_argument('--password')
-    parser.add_argument('--brief', action='store_true', default=False)
-    parser.add_argument('--qos', default=0, type=int, choices=[0, 1, 2])
+                        default=60,
+                        help="The amount of time, in seconds, a publisher "
+                             "client will wait to successfully publish it's "
+                             "messages. By default this is 60")
+    parser.add_argument('--hostname', required=True,
+                        help='The hostname (or ip address) of the broker to '
+                             'connect to')
+    parser.add_argument('--port', default=1883, type=int,
+                        help='The port to use for connecting to the broker. '
+                             'The default port is 1883.')
+    parser.add_argument('--topic',
+                        help='The MQTT topic to use for the benchmark. The '
+                             'default topic is pybench')
+    parser.add_argument('--cacert',
+                        help='The certificate authority certificate file that '
+                             'are treated as trusted by the clients')
+    parser.add_argument('--username',
+                        help='An optional username to use for auth on the '
+                             'broker')
+    parser.add_argument('--password',
+                        help='An optional password to use for auth on the '
+                             'broker. This requires a username is also set')
+    parser.add_argument('--brief', action='store_true', default=False,
+                        help='Print results in a colon separated list instead'
+                             ' of a human readable format. See the README for '
+                             'the order of results in this format')
+    parser.add_argument('--qos', default=0, type=int, choices=[0, 1, 2],
+                        help='The qos level to use for the benchmark')
 
     opts = parser.parse_args()
 

@@ -44,7 +44,9 @@ subscribers.
 
 Outside of mqtt connection options there is also the ``--brief`` flag which is
 used to print a colon separated list of benchmark results instead of the default
-human readable formatted output.
+human readable formatted output. The format for this output is::
+
+    Subscriber Count:Publisher Count:Subscriber Mean Duration:Subscriber Duration Std. Deviation:Subscriber Avg. Throughput:Subscriber Total Throughput:Publisher Mean Duration:Publisher Duration Std. Deviation:Publisher Avg. Throughput:Publisher Total Throughput
 
 Tuning the benchmark
 ''''''''''''''''''''
