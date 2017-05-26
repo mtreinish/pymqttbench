@@ -35,7 +35,11 @@ After installing pymqttbench you simply run it with the::
 
     pymqttbench --hostname $BROKER_HOST
 
-command. The hostname parameter is required to tell pymqttbench the hostname
+command. This single command will launch both the publishers and subscribers
+workers simultaneously and benchmark their performance. This way you don't
+have to worry about synchronizing multiple commands to run a benchmark.
+
+The hostname parameter is required to tell pymqttbench the hostname
 of the broker. This is the only required field, but there are several other
 options exposed for how to connect to the broker. ``--port`` is used to specify
 the port if you're not connecting on the standard port, ``1883``. ``--username``
