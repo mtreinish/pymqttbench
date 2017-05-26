@@ -264,14 +264,10 @@ def main():
 
     sub_mean_duration = numpy.mean(sub_times)
     sub_avg_throughput = float(opts.sub_count) / float(sub_mean_duration)
-    sub_sum_duration = numpy.sum(sub_times)
-    sub_agg_thpt = float(opts.sub_count * opts.sub_clients) / float(sub_sum_duration)
     sub_total_thpt = float(
         opts.sub_count * opts.sub_clients) / float(sub_mean_duration)
     pub_mean_duration = numpy.mean(pub_times)
     pub_avg_throughput = float(opts.pub_count) / float(pub_mean_duration)
-    pub_sum_duration = numpy.sum(pub_times)
-    pub_agg_thpt = float(opts.pub_count * opts.pub_clients) / float(pub_sum_duration)
     pub_total_thpt = float(
         opts.pub_count * opts.pub_clients) / float(pub_mean_duration)
     if opts.brief:
