@@ -10,17 +10,21 @@ a fixed number of messages.
 Installation
 ------------
 
-To install pymqttbench you need to clone the repo with::
+The easiest way to install pymqttbench is use pip::
 
-    https://github.com/mtreinish/handbrakecloud.git
+    pip install pymqttbench
+
+Alternatively you can clone the repo with::
+
+    git clone https://github.com/mtreinish/pymqttbench.git
 
 then install it using pip::
 
-    pip install handbrakecloud
+    pip install ./pymqttbench
 
 Alternatively you can run::
 
-    cd handbrakecloud && python setup.py install
+    cd pymqttbench && python setup.py install
 
 however using pip is recommended.
 
